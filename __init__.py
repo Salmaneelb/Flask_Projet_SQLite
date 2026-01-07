@@ -85,9 +85,16 @@ def authentification_user():
             session['auth_user'] = True
             return redirect(url_for('fiche_nom_form'))  # redirige vers la recherche
         else:
+            if login == "user" and password == "12345":
+                session['user_auth'] = True
+                return redirect(url_for('fiche_nom'))
+            else:
+                return "Accès refusé", 403
             return render_template('formulaire_authentification.html', error=True)
 
     return render_template('formulaire_authentification.html', error=False)
+
+
 
 @app.route('/fiche_nom/', methods=['GET'])
 def fiche_nom_form():
