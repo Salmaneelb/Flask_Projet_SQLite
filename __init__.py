@@ -11,6 +11,34 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
 def est_authentifie():
     return session.get('authentifie')
+    
+@app.route('/fiche_nom/<nom>', methods=['GET'])
+@user_auth_required
+def fiche_nom(nom):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM clients WHERE nom LIKE ?", 
+        ('%' + nom + '%',)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    if not rows:
+        return jsonify({"message": "Aucun client trouvé"}), 404
+
+    clients = []
+    for row in rows:
+        clients.append({
+            "id": row[0],
+            "nom": row[1],
+            "prenom": row[2],
+            "email": row[3]
+        })
+
+    return jsonify(clients)
 
 @app.route('/')
 def hello_world():
