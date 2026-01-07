@@ -11,34 +11,7 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
 def est_authentifie():
     return session.get('authentifie')
-    
-@app.route('/fiche_nom/<nom>', methods=['GET'])
-@user_auth_required
-def fiche_nom(nom):
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT * FROM clients WHERE nom LIKE ?", 
-        ('%' + nom + '%',)
-    )
-
-    rows = cursor.fetchall()
-    conn.close()
-
-    if not rows:
-        return jsonify({"message": "Aucun client trouvé"}), 404
-
-    clients = []
-    for row in rows:
-        clients.append({
-            "id": row[0],
-            "nom": row[1],
-            "prenom": row[2],
-            "email": row[3]
-        })
-
-    return jsonify(clients)
 
 @app.route('/')
 def hello_world():
@@ -104,6 +77,45 @@ def enregistrer_client():
     conn.commit()
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
-                                                                                                                                       
+    
+@app.route('/authentification_user', methods=['GET', 'POST'])
+def authentification_user():
+    if request.method == 'POST':
+        if request.form['username'] == 'user' and request.form['password'] == '12345':
+            session['auth_user'] = True
+            return redirect(url_for('fiche_nom_form'))  # redirige vers la recherche
+        else:
+            return render_template('formulaire_auth_user.html', error=True)
+
+    return render_template('formulaire_auth_user.html', error=False)
+
+@app.route('/fiche_nom/', methods=['GET'])
+def fiche_nom_form():
+    if not est_authentifie_user():
+        return redirect(url_for('authentification_user'))
+
+    return render_template('formulaire_recherche_nom.html')
+
+@app.route('/fiche_nom/', methods=['POST'])
+def fiche_nom_result():
+    if not est_authentifie_user():
+        return redirect(url_for('authentification_user'))
+
+    nom = request.form['nom']
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Recherche partielle avec LIKE
+    cursor.execute("SELECT * FROM clients WHERE nom LIKE ?", ('%' + nom + '%',))
+    data = cursor.fetchall()
+    conn.close()
+
+    # Réutilise ton template read_data.html (comme /consultation et /fiche_client)
+    return render_template('read_data.html', data=data)
+
+
+
+
 if __name__ == "__main__":
   app.run(debug=True)
