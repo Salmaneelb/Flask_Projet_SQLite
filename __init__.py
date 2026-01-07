@@ -83,7 +83,7 @@ def authentification_user():
     if request.method == 'POST':
         if request.form['username'] == 'user' and request.form['password'] == '12345':
             session['auth_user'] = True
-            return redirect(url_for('fiche_nom_form'))  # redirige vers la recherche
+            return redirect(url_for('authentification'))  # redirige vers la recherche
         else:
             if login == "user" and password == "12345":
                 session['user_auth'] = True
