@@ -96,8 +96,12 @@ def authentification_user():
 
 @app.route('/fiche_nom/', methods=['GET'])
 def fiche_nom_form():
-    if not est_authentifie():
-        return redirect(url_for('authentification'))
+    # Exercice 2 : contrôle USER (pas admin)
+    if not session.get("auth_user"):
+        return redirect(url_for('authentification_user'))
+
+    return render_template("fiche_nom.html")
+
 
 @app.route('/fiche_nom/', methods=['POST'])
 def fiche_nom_result():
