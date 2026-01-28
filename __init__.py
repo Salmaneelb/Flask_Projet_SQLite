@@ -92,13 +92,13 @@ def enregistrer_client():
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
     
 
-@app.route('/fiche_nom/', methods=['GET'])
+@app.route('/fiche_nom', methods=['GET'])
 def fiche_nom_form():
     # Exercice 2 : contrôle USER (pas admin)
     if not session.get("auth_user"):
-        return redirect(url_for('authentification_user'))
+        return redirect(url_for('authentification'))
 
-    return redirect(url_for('/fiche_nom'))
+    return redirect(url_for('fiche_nom'))
 
 
 @app.route('/fiche_nom/', methods=['POST'])
