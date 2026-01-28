@@ -76,22 +76,15 @@ def enregistrer_client():
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
     
-@app.route('/authentification', methods=['GET', 'POST'])
+@app.route('/authentification_user', methods=['GET', 'POST'])
 def authentification_user():
     if request.method == 'POST':
-        if request.form['username'] == 'user' and request.form['password'] == '12345':
+        if request.form.get('username') == 'user' and request.form.get('password') == '12345':
             session['auth_user'] = True
-            return redirect(url_for('lecture'))  # redirige vers la recherche
-        else:
-            if login == "user" and password == "12345":
-                session['user_auth'] = True
-                return redirect(url_for('fiche_nom'))
-            else:
-                return "Accès refusé", 403
-            return render_template('formulaire_authentification.html', error=True)
+            return redirect(url_for('fiche_nom_form'))  # va vers la recherche
+        return render_template('formulaire_authentification.html', error=True)
 
     return render_template('formulaire_authentification.html', error=False)
-
 
 
 @app.route('/fiche_nom/', methods=['GET'])
