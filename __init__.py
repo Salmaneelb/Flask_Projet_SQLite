@@ -46,12 +46,12 @@ def authentification():
         # ADMIN
         if username == 'admin' and password == 'password':
             session['authentifie'] = True
-            return redirect(url_for('lecture'))
+            return redirect(url_for('liste_livres'))
 
         # USER (exercice 2)
         if username == 'user' and password == '12345':
             session['auth_user'] = True
-            return redirect(url_for('fiche_nom_form'))
+            return redirect(url_for('liste_livres'))
 
         # Identifiants incorrects
         return render_template('formulaire_authentification.html', error=True)
