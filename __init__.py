@@ -124,7 +124,7 @@ def authentification_user():
     if request.method == "POST":
         if request.form.get("username") == "user" and request.form.get("password") == "12345":
             session["auth_user"] = True
-            return redirect(url_for("/fiche_nom"))
+            return redirect(url_for("fiche_nom"))
         return render_template("formulaire_authentification.html", error=True)
 
     return render_template("formulaire_authentification.html", error=False)
