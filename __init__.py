@@ -76,7 +76,7 @@ def enregistrer_client():
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
     
-@app.route('/authentification_user', methods=['GET', 'POST'])
+@app.route('/authentification', methods=['GET', 'POST'])
 def authentification_user():
     if request.method == 'POST':
         if request.form.get('username') == 'user' and request.form.get('password') == '12345':
