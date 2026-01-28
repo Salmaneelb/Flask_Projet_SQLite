@@ -119,7 +119,7 @@ def fiche_nom_result():
     # Réutilise ton template read_data.html (comme /consultation et /fiche_client)
     return render_template('read_data.html', data=data)
 
-@app.route("/authentification_user", methods=["GET", "POST"])
+@app.route("/authentification", methods=["GET", "POST"])
 def authentification_user():
     if request.method == "POST":
         if request.form.get("username") == "user" and request.form.get("password") == "12345":
