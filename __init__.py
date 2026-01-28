@@ -100,7 +100,7 @@ def fiche_nom_form():
     if not session.get("auth_user"):
         return redirect(url_for('authentification_user'))
 
-    return render_template("fiche_nom.html")
+    return redirect(url_for('/fiche_nom'))
 
 
 @app.route('/fiche_nom/', methods=['POST'])
