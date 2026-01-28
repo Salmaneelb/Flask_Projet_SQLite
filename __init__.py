@@ -36,25 +36,28 @@ def hello_world():
 @app.route('/authentification', methods=['GET', 'POST'])
 def authentification():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
 
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
-        cursor.execute("SELECT id, username, role FROM users WHERE username=? AND password=?", (username, password))
-        user = cursor.fetchone()
-        conn.close()
+        # Nettoyage des sessions
+        session.pop('authentifie', None)
+        session.pop('auth_user', None)
 
-        if user:
+        # ADMIN
+        if username == 'admin' and password == 'password':
             session['authentifie'] = True
-            session['username'] = user[1]
-            session['role'] = user[2]
-            session['user_id'] = user[0]
-            return redirect(url_for('liste_livres'))
-        else:
-            return render_template('formulaire_authentification.html', error=True)
+            return redirect(url_for('lecture'))
+
+        # USER (exercice 2)
+        if username == 'user' and password == '12345':
+            session['auth_user'] = True
+            return redirect(url_for('fiche_nom_form'))
+
+        # Identifiants incorrects
+        return render_template('formulaire_authentification.html', error=True)
 
     return render_template('formulaire_authentification.html', error=False)
+
 
 # --------------------------
 # Gestion des livres
