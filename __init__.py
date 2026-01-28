@@ -28,11 +28,26 @@ def lecture():
     return "<h2>Bravo, vous êtes authentifié</h2>"
 
 @app.route('/authentification', methods=['GET', 'POST'])
-def authentification_admin():
+def authentification():
     if request.method == 'POST':
-        if request.form.get('username') == 'admin' and request.form.get('password') == "password":
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+
+        # Reset propre (évite mélanges)
+        session.pop('authentifie', None)
+        session.pop('auth_user', None)
+
+        # ADMIN
+        if username == 'admin' and password == 'password':
             session['authentifie'] = True
             return redirect(url_for('lecture'))
+
+        # USER (Exercice 2)
+        if username == 'user' and password == '12345':
+            session['auth_user'] = True
+            return redirect(url_for('fiche_nom_form'))
+
+        # Sinon : erreur
         return render_template('formulaire_authentification.html', error=True)
 
     return render_template('formulaire_authentification.html', error=False)
@@ -76,16 +91,6 @@ def enregistrer_client():
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
     
-@app.route('/authentification', methods=['GET', 'POST'])
-def authentification_user():
-    if request.method == 'POST':
-        if request.form.get('username') == 'user' and request.form.get('password') == '12345':
-            session['auth_user'] = True
-            return redirect(url_for('fiche_nom_form'))  # va vers la recherche
-        return render_template('formulaire_authentification.html', error=True)
-
-    return render_template('formulaire_authentification.html', error=False)
-
 
 @app.route('/fiche_nom/', methods=['GET'])
 def fiche_nom_form():
